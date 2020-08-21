@@ -25,10 +25,10 @@ steps:
 # pr: none
 
 schedules:
-- cron: '* * */2 * *'  
+- cron: '*/1 * * * *'  
   displayName: Every 2 days
   branches:
     include:
-    - TBranch
+    - Feature
   always: true
   
