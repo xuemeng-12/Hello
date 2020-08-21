@@ -25,8 +25,8 @@ steps:
 # pr: none
 
 schedules:
-- cron: '*/1 * * * *'  
-  displayName: Every 1 mins 
+- cron: '* * */2 * *'  
+  displayName: Every 2 days
   branches:
     include:
     - TBranch
