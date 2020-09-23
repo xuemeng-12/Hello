@@ -41,7 +41,7 @@
     # -------------------------------------------------------------------------------
     - stage: build_version_stage
       displayName: Build Version Stage
-      condition: and(succeeded(), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/master'))
+      # condition: and(succeeded(), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/master'))
       jobs:
      
       - job: build_version_job
