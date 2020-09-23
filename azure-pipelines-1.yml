@@ -50,7 +50,8 @@
       
     - stage: build_version_stage
       displayName: Build Version Stage
-    
+      condition: and(succeeded(), eq(variables['System.PullRequest.TargetBranch'], 'master'))
+
       
       jobs:
      
