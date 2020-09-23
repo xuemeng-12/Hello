@@ -44,7 +44,7 @@
        - job:
          steps:
             - script: |
-                 targetbranch is $(System.PullRequest.TargetBranch)
+                  $(System.PullRequest.TargetBranch)
          
           
       
