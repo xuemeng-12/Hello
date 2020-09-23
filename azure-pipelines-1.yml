@@ -62,6 +62,7 @@
   
           - bash: |
               echo "##vso[build.updatebuildnumber]$(major).$(minor).$(patch)"
+          - script: 
               echo branch is $(System.PullRequest.TargetBranch)
             name: set_master_build_name
             displayName: Set Master Build Name
