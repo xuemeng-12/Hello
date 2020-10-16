@@ -1,0 +1,115 @@
+# -------------------------------------------------------------------------------
+# Build Pipeline
+# -------------------------------------------------------------------------------
+
+  trigger:
+   none
+
+
+  pr:
+    branches:
+      include:
+        - master
+        - tt
+
+  variables:
+
+    # -------------------------------------------------------------------------------
+    # Group Variables
+    # -------------------------------------------------------------------------------
+    # - group: connections     
+    # - group: images
+  
+    # -------------------------------------------------------------------------------
+    # Local Variables
+    # -------------------------------------------------------------------------------
+    - name: major
+      value: 1
+    - name: minor
+      value: 0
+  
+    # -------------------------------------------------------------------------------
+    # Enable Verbose Mode
+    # -------------------------------------------------------------------------------
+    - name: System.Debug
+      value: true
+  
+  stages:
+
+    # -------------------------------------------------------------------------------
+    # Set Build Version Name After Merge From Pull Request
+    # -------------------------------------------------------------------------------
+    # - stage: test
+    #   jobs:
+    #    - job:
+    #      steps:
+    #         - script: |
+    #               $(System.PullRequest.TargetBranch)
+         
+          
+      
+    - stage: build_version_stage
+      displayName: Build Version Stage
+      condition: and(succeeded(), eq(variables['System.PullRequest.TargetBranch'], 'master'))
+
+      
+      jobs:
+     
+      - job: build_version_job
+        displayName: Build Version Job
+        variables:
+          patch: $[counter(variables['minor'], 0)]
+        steps:
+  
+          - bash: |
+              echo "##vso[build.updatebuildnumber]$(major).$(minor).$(patch)"
+          - script: 
+              echo branch is $(System.PullRequest.TargetBranch)
+            name: set_master_build_name
+            displayName: Set Master Build Name
+
+    # -------------------------------------------------------------------------------
+    # Build App on Every Run, Test App on Every PR, Docker Build and Push on Merge Only
+    # -------------------------------------------------------------------------------
+    - stage: build_stage
+      displayName: Build Stage
+      jobs:
+  
+        - job: 'build_job'
+          displayName: 'Build Job'
+          timeoutInMinutes: 60
+          pool: 
+            vmImage: $(linux)  
+          steps:
+
+            - task: NodeTool@0
+              displayName: Use Node.js 
+              inputs:
+                versionSpec: '12.x'
+                checkLatest: true
+  
+            - script: |
+                  npm install -g yarn@1.22.5
+              displayName: Use Yarn 1.22.5
+
+            - script: |
+                  yarn global add @vue/cli
+                  yarn global add @vue/cli-service
+                  vue add babel
+                  yarn install
+              displayName: Add Dependencies
+
+            - script: |
+                  yarn build
+              displayName: Build App
+
+            # - task: Docker@2
+            #   displayName: 'Build and Push Docker Image'
+            #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')) 
+            #   inputs:
+            #     containerRegistry: $(azure-container-registry)
+            #     repository: $(Build.DefinitionName)
+            #     command: 'buildAndPush'
+            #     Dockerfile: .pipeline/Dockerfile
+            #     buildContext: $(Build.SourcesDirectory)
+            #     tags: '$(Build.BuildNumber)'
