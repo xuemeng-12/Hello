@@ -9,7 +9,7 @@ trigger:
 
 pool:
   name: my agent pools  # name of the pool to run this job in
-  demands: agent1 | [ string ]  # see the following "Demands" topic
+  demands: Agent.Name equals "agent1" | [ string ]  # see the following "Demands" topic
 steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
