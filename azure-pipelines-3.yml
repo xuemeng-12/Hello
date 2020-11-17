@@ -6,10 +6,12 @@
 trigger:
 - master
 
+#The demand should be in the format '<NAME>' to test existence,
+#and '<NAME> -equals <VALUE>' to test for a specific value. For example, 'VISUALSTUDIO' or 'agent.os -equals Windows_NT'.
 
 pool:
   name: my agent pools  # name of the pool to run this job in
-  demands: Agent.Name equals "agent1" | [ string ]  # see the following "Demands" topic
+  demands: Agent.Name -equals agent1 # see the following "Demands" topic
 steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
